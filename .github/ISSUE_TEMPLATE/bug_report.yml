@@ -1,0 +1,24 @@
+name: Zgłoszenie błędu
+about: Zgłoś problem z działaniem aplikacji
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Dziękuję za pomoc w rozwijaniu projektu.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Co się stało?
+      description: Opisz problem i oczekiwane zachowanie.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Przeglądarka i urządzenie
+      placeholder: Np. Chrome 158, Android
+  - type: textarea
+    id: steps
+    attributes:
+      label: Kroki do odtworzenia
+      placeholder: 1. Otwórz… 2. Wybierz… 3. Kliknij…

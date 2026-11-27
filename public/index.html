@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pl" data-theme="system">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Misja: Informatyka to darmowa aplikacja przeglądarkowa z interaktywnymi zadaniami dla klas 3–8.">
+  <meta name="application-name" content="Misja: Informatyka">
+  <meta name="theme-color" content="#5b4bdb">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:title" content="Misja: Informatyka">
+  <meta property="og:description" content="Interaktywne cyfrowe misje dla uczniów klas 3–8. Bez kont, reklam i śledzenia.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lepczynski-cloud.github.io/misja-informatyka/">
+  <meta property="og:image" content="https://lepczynski-cloud.github.io/misja-informatyka/assets/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Misja: Informatyka, cyfrowe zadania dla klas 3–8">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Misja: Informatyka">
+  <meta name="twitter:description" content="Interaktywne cyfrowe misje dla uczniów klas 3–8.">
+  <meta name="twitter:image" content="https://lepczynski-cloud.github.io/misja-informatyka/assets/social-card.png">
+  <title>Misja: Informatyka</title>
+  <link rel="canonical" href="https://lepczynski-cloud.github.io/misja-informatyka/">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    (() => {
+      let saved = 'system';
+      try {
+        saved = localStorage.getItem('misja-informatyka-theme') || 'system';
+      } catch {
+        // Niektóre tryby prywatne lub osadzone strony blokują localStorage.
+      }
+      document.documentElement.dataset.theme = ['system', 'light', 'dark'].includes(saved) ? saved : 'system';
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#app">Przejdź do treści</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="brand" type="button" data-view="home" aria-label="Przejdź do strony głównej">
+        <img src="./assets/logo.svg" width="46" height="46" alt="">
+        <span class="brand-copy">
+          <strong>Misja: Informatyka</strong>
+          <small>Cyfrowe zadania dla klas 3–8</small>
+        </span>
+      </button>
+
+      <nav class="main-nav" aria-label="Główna nawigacja">
+        <button type="button" data-view="student">Dla ucznia</button>
+        <button type="button" data-view="teacher">Dla nauczyciela</button>
+        <button type="button" data-view="about">O projekcie</button>
+      </nav>
+
+      <label class="theme-control">
+        <span>Motyw</span>
+        <select id="theme-select" aria-label="Wybierz motyw kolorystyczny">
+          <option value="system">Systemowy</option>
+          <option value="light">Jasny</option>
+          <option value="dark">Ciemny</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <div class="build-banner" role="status">
+    <span aria-hidden="true">🚧</span>
+    <strong>Projekt w fazie budowy.</strong>
+    Zadania i funkcje są rozwijane. Aplikacja wspiera naukę, ale nie zastępuje nauczyciela ani szkolnych narzędzi.
+  </div>
+
+  <main id="app" tabindex="-1">
+    <section class="loading-screen" aria-live="polite">
+      <div class="loader" aria-hidden="true"></div>
+      <h1>Przygotowuję cyfrowe misje…</h1>
+      <p>Za chwilę pojawi się katalog zadań.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>Misja: Informatyka</strong>
+      <span>Projekt open source, bez reklam, kont uczniów i analityki.</span>
+    </div>
+    <div class="footer-links">
+      <button type="button" data-view="about">Prywatność i zasady</button>
+      <a href="https://github.com/lepczynski-cloud/misja-informatyka" rel="noreferrer">Kod na GitHubie</a>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+
+  <noscript>
+    <div class="noscript">Ta aplikacja potrzebuje włączonego JavaScriptu.</div>
+  </noscript>
+  <script src="./app.js" defer></script>
+</body>
+</html>

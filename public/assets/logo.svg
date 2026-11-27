@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Misja Informatyka</title>
+  <desc id="desc">Fioletowa ikona z terminalem i gwiazdą</desc>
+  <defs>
+    <linearGradient id="g" x1="18" y1="10" x2="112" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7a68f2"/>
+      <stop offset="1" stop-color="#4032ae"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="34" fill="url(#g)"/>
+  <rect x="24" y="31" width="80" height="64" rx="15" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-opacity=".32" stroke-width="3"/>
+  <path d="M39 51l13 11-13 11" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M59 76h22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M91 20l2.9 6.1 6.6.9-4.8 4.7 1.2 6.6-5.9-3.1-5.9 3.1 1.2-6.6-4.8-4.7 6.6-.9z" fill="#ffd36b"/>
+</svg>

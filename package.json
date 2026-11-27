@@ -1,0 +1,26 @@
+{
+  "name": "misja-informatyka",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interaktywna aplikacja edukacyjna z informatyki dla klas 3–8.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs public",
+    "validate": "node scripts/validate-tasks.mjs && node --check public/app.js",
+    "build": "node scripts/build.mjs",
+    "preview": "npm run build && node scripts/serve.mjs dist",
+    "test": "npm run validate && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lepczynski-cloud/misja-informatyka.git"
+  },
+  "homepage": "https://lepczynski-cloud.github.io/misja-informatyka/",
+  "bugs": {
+    "url": "https://github.com/lepczynski-cloud/misja-informatyka/issues"
+  }
+}
