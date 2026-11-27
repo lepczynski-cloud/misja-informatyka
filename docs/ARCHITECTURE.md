@@ -2,7 +2,7 @@
 
 ## Założenia
 
-Projekt jest statyczną aplikacją typu single-page application bez frameworka i bez backendu. Ma działać na GitHub Pages, nie wymagać kont użytkowników i pozostawać łatwy do rozwijania przez osoby znające podstawy HTML, CSS, JavaScript oraz JSON.
+Projekt jest statyczną aplikacją typu single-page application bez frameworka i bez backendu. Nie wymaga kont użytkowników i pozostaje możliwy do rozwijania przez osoby znające podstawy HTML, CSS, JavaScript oraz JSON.
 
 ## Przepływ danych
 
@@ -12,6 +12,12 @@ Projekt jest statyczną aplikacją typu single-page application bez frameworka i
 4. Wybrany widok jest renderowany po stronie przeglądarki.
 5. Sesja quizu istnieje wyłącznie w pamięci bieżącej karty.
 6. Po odświeżeniu wynik nie jest odtwarzany.
+
+## Widok nauczyciela
+
+Katalog nauczyciela zawsze renderuje pełną listę zadań pasujących do aktywnych filtrów. Lista ma własny obszar przewijania, dzięki czemu nauczyciel może przeglądać setki pozycji bez utraty panelu filtrów i zestawu.
+
+Wybrane zadania są przechowywane w `Set`, co zapobiega duplikatom. Jeden udostępniony zestaw może zawierać maksymalnie 30 pozycji.
 
 ## Link nauczyciela
 
@@ -45,7 +51,7 @@ Ograniczenia:
 - wstawia numer wersji do nazwy pamięci podręcznej service workera,
 - tworzy plik `.nojekyll`.
 
-Katalog `dist` jest artefaktem wdrożeniowym GitHub Pages.
+Katalog `dist` jest gotowym artefaktem statycznej strony.
 
 ## Walidacja zadań
 
@@ -53,14 +59,30 @@ Katalog `dist` jest artefaktem wdrożeniowym GitHub Pages.
 
 - format i unikalność identyfikatorów,
 - zakres klas,
-- listę tematów i typów,
+- listę tematów i pięciu obsługiwanych typów,
 - obecność treści,
 - indeksy poprawnych odpowiedzi,
-- zgodność elementów w zadaniach kolejnościowych,
-- unikalność par oraz kategorii,
-- minimalną liczbę zadań dla klas, tematów i typów.
+- unikalność opcji, par oraz kategorii,
+- minimalną liczbę zadań,
+- co najmniej 108 zadań z cyberbezpieczeństwa,
+- przewagę zadań jednokrotnego wyboru,
+- większą liczbę zadań dla klas 5 i 6 niż dla pozostałych klas.
 
 Błąd walidacji zatrzymuje workflow przed wdrożeniem.
+
+## Tryby zadań
+
+Obsługiwane typy:
+
+```text
+choice
+multi
+match
+sort
+input
+```
+
+Typ `order` nie jest obsługiwany. Zadania dotyczące procesów powinny pytać o jednoznaczny krok, warunek, cel lub najlepszą decyzję.
 
 ## Tryb offline
 
@@ -82,10 +104,10 @@ Wartość `system` korzysta z `prefers-color-scheme`. Ręczny wybór jest zapisy
 
 ## Brak zewnętrznych zależności w aplikacji
 
-Kod uruchamiany przez ucznia nie pobiera bibliotek z CDN. Ma to kilka zalet:
+Kod uruchamiany przez ucznia nie pobiera bibliotek z CDN. Daje to:
 
 - szybsze i bardziej przewidywalne uruchamianie,
-- łatwiejsza praca offline,
+- łatwiejszą pracę offline,
 - mniej zależności od zewnętrznych usług,
 - brak dodatkowych skryptów mogących śledzić użytkownika,
-- prostsza publikacja na GitHub Pages.
+- prostsze wdrażanie jako statyczna strona.

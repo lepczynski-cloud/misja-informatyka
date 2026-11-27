@@ -4,7 +4,7 @@ import process from 'node:process';
 const path = new URL('../public/data/tasks.json', import.meta.url);
 const tasks = JSON.parse(await readFile(path, 'utf8'));
 const topics = new Set(['komputer', 'internet', 'bezpieczenstwo', 'algorytmy', 'dane', 'tworzenie', 'ai', 'sieci', 'prawo']);
-const types = new Set(['choice', 'multi', 'order', 'match', 'sort', 'input']);
+const types = new Set(['choice', 'multi', 'match', 'sort', 'input']);
 const errors = [];
 const warnings = [];
 const ids = new Set();
@@ -66,13 +66,6 @@ for (const task of tasks) {
     }
   }
 
-  if (task.type === 'order') {
-    if (!Array.isArray(task.items) || task.items.length < 3 || task.items.some((item) => !isText(item)) || !unique(task.items)) fail(task, 'items musi zawierać co najmniej trzy unikalne kroki.');
-    if (!Array.isArray(task.answer) || task.answer.length !== task.items.length || !task.answer.every((item) => task.items.includes(item)) || !unique(task.answer)) {
-      fail(task, 'answer musi zawierać te same elementy co items.');
-    }
-  }
-
   if (task.type === 'match') {
     if (!Array.isArray(task.pairs) || task.pairs.length < 3 || task.pairs.some((pair) => !Array.isArray(pair) || pair.length !== 2 || pair.some((value) => !isText(value)))) {
       fail(task, 'pairs musi zawierać co najmniej trzy poprawne pary.');
@@ -111,19 +104,38 @@ for (const task of tasks) {
 }
 
 for (let grade = 3; grade <= 8; grade += 1) {
-  if ((gradeCounts.get(grade) ?? 0) < 15) warnings.push(`Klasa ${grade} ma mniej niż 15 zadań.`);
+  if ((gradeCounts.get(grade) ?? 0) < 50) warnings.push(`Klasa ${grade} ma mniej niż 50 zadań.`);
 }
 for (const topic of topics) {
-  if ((topicCounts.get(topic) ?? 0) < 10) warnings.push(`Temat ${topic} ma mniej niż 10 zadań.`);
+  if ((topicCounts.get(topic) ?? 0) < 30) warnings.push(`Temat ${topic} ma mniej niż 30 zadań.`);
 }
 for (const type of types) {
   if ((typeCounts.get(type) ?? 0) === 0) warnings.push(`Brak zadań typu ${type}.`);
+}
+
+if (tasks.length < 486) errors.push(`Katalog powinien zawierać co najmniej 486 zadań, a zawiera ${tasks.length}.`);
+if ((topicCounts.get('bezpieczenstwo') ?? 0) < 108) errors.push('Kategoria cyberbezpieczeństwo powinna zawierać co najmniej 108 zadań.');
+if ((typeCounts.get('choice') ?? 0) < Math.ceil(tasks.length * 0.75)) errors.push('Co najmniej 75% katalogu powinny stanowić zadania jednokrotnego wyboru.');
+
+const fourOptionChoices = tasks.filter((task) => task.type === 'choice' && task.options?.length === 4);
+const answerPositionCounts = [0, 1, 2, 3].map((position) => fourOptionChoices.filter((task) => task.answer === position).length);
+if (fourOptionChoices.length >= 40) {
+  const minExpected = Math.floor(fourOptionChoices.length * 0.15);
+  const maxExpected = Math.ceil(fourOptionChoices.length * 0.35);
+  if (answerPositionCounts.some((count) => count < minExpected || count > maxExpected)) {
+    errors.push(`Pozycje poprawnych odpowiedzi są zbyt przewidywalne: ${answerPositionCounts.join(', ')}.`);
+  }
+}
+const maxOtherGrade = Math.max(...[3, 4, 7, 8].map((grade) => gradeCounts.get(grade) ?? 0));
+if ((gradeCounts.get(5) ?? 0) <= maxOtherGrade || (gradeCounts.get(6) ?? 0) <= maxOtherGrade) {
+  errors.push('Klasy 5 i 6 powinny mieć więcej zadań niż pozostałe klasy.');
 }
 
 console.log(`Sprawdzono ${tasks.length} zadań.`);
 console.log('Klasy:', Object.fromEntries([...gradeCounts].sort((a, b) => a[0] - b[0])));
 console.log('Tematy:', Object.fromEntries([...topicCounts].sort()));
 console.log('Typy:', Object.fromEntries([...typeCounts].sort()));
+console.log('Pozycje poprawnych odpowiedzi (4 opcje):', answerPositionCounts);
 
 for (const warning of warnings) console.warn(`OSTRZEŻENIE: ${warning}`);
 if (errors.length) {

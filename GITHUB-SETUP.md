@@ -17,7 +17,7 @@ Misja: Informatyka
 Krótki opis repozytorium:
 
 ```text
-Interaktywna aplikacja przeglądarkowa z zadaniami z informatyki dla uczniów klas 3–8, kreatorem zestawów dla nauczyciela i trybem samodzielnej nauki.
+Interaktywna aplikacja przeglądarkowa z 486 zadaniami z informatyki dla uczniów klas 3-8, kreatorem zestawów dla nauczyciela i trybem samodzielnej nauki.
 ```
 
 Proponowane topics:
@@ -90,7 +90,7 @@ Test and deploy GitHub Pages
 Wykonuje on kolejno:
 
 - instalację środowiska,
-- walidację 162 zadań,
+- walidację 486 zadań,
 - kontrolę składni JavaScript,
 - budowanie katalogu `dist`,
 - publikację na GitHub Pages.

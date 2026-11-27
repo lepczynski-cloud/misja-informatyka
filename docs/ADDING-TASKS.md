@@ -12,11 +12,9 @@ Plik zawiera jedną tablicę obiektów JSON. Po każdej zmianie uruchom:
 npm run validate
 ```
 
-Walidator sprawdza identyfikatory, klasy, tematy, trudność, wymagane pola oraz poprawność odpowiedzi dla każdego typu ćwiczenia.
+Walidator sprawdza identyfikatory, klasy, tematy, trudność, wymagane pola, odpowiedzi oraz najważniejsze założenia całego katalogu.
 
 ## Pola wspólne
-
-Każde zadanie zawiera:
 
 ```json
 {
@@ -26,8 +24,8 @@ Każde zadanie zawiera:
   "difficulty": 2,
   "type": "choice",
   "title": "Krótki tytuł",
-  "story": "Krótka sytuacja wprowadzająca ucznia w zadanie.",
-  "prompt": "Jasne polecenie lub pytanie.",
+  "story": "Konkretna sytuacja wprowadzająca ucznia w zadanie.",
+  "prompt": "Jasne pytanie lub polecenie.",
   "hint": "Podpowiedź, która pomaga pomyśleć, ale nie zdradza od razu rozwiązania.",
   "explanation": "Wyjaśnienie, dlaczego odpowiedź jest poprawna."
 }
@@ -47,7 +45,7 @@ Przykład:
 k5-bezpieczenstwo-04
 ```
 
-Identyfikator musi być unikalny i stabilny. Nie zmieniaj istniejącego `id` bez ważnego powodu, ponieważ linki przygotowane wcześniej przez nauczycieli odwołują się właśnie do identyfikatorów.
+Identyfikator musi być unikalny i stabilny. Linki przygotowane przez nauczycieli odwołują się właśnie do `id`.
 
 ### `grades`
 
@@ -85,7 +83,7 @@ prawo
 - `2` oznacza wyzwanie,
 - `3` oznacza misję specjalną.
 
-Trudność powinna uwzględniać klasę. To samo zagadnienie może być łatwe dla klasy 8, ale trudne dla klasy 5.
+Trudność należy oceniać względem wskazanej klasy.
 
 ## Typ `choice`
 
@@ -102,16 +100,20 @@ Jedna poprawna odpowiedź. `answer` jest indeksem elementu w tablicy `options`, 
   "story": "Maja dostała kilka podobnych adresów i szuka oficjalnej strony muzeum.",
   "prompt": "Który fragment adresu warto sprawdzić szczególnie uważnie?",
   "options": [
-    "Nazwę domeny",
     "Kolor przycisku",
     "Liczbę obrazków",
+    "Nazwę domeny",
     "Godzinę na zegarze"
   ],
-  "answer": 0,
+  "answer": 2,
   "hint": "Pomyśl, który element wskazuje właściciela miejsca w sieci.",
   "explanation": "Nazwa domeny pomaga rozpoznać, do jakiej strony naprawdę prowadzi adres."
 }
 ```
+
+Pytanie musi mieć jedną jednoznacznie najlepszą odpowiedź. Nie należy tworzyć zadań, w których kilka czynności można poprawnie wykonać w dowolnej kolejności.
+
+Pozycję poprawnej odpowiedzi należy zmieniać między zadaniami. Walidator kontroluje rozkład indeksów w całym katalogu.
 
 ## Typ `multi`
 
@@ -124,9 +126,9 @@ Kilka poprawnych odpowiedzi. `answer` jest tablicą indeksów.
   "topic": "ai",
   "difficulty": 2,
   "type": "multi",
-  "title": "Sprawdź podpowiedź AI",
-  "story": "Chatbot podał trzy fakty potrzebne do prezentacji.",
-  "prompt": "Co warto zrobić przed użyciem odpowiedzi?",
+  "title": "Sprawdź podpowiedź narzędzia",
+  "story": "Narzędzie podało trzy fakty potrzebne do prezentacji.",
+  "prompt": "Co warto zrobić przed wykorzystaniem odpowiedzi?",
   "options": [
     "Porównać informacje z wiarygodnym źródłem",
     "Sprawdzić, czy odpowiedź pasuje do pytania",
@@ -135,42 +137,9 @@ Kilka poprawnych odpowiedzi. `answer` jest tablicą indeksów.
   ],
   "answer": [0, 1],
   "hint": "Dobra odpowiedź nadal może zawierać błąd albo dotyczyć innego problemu.",
-  "explanation": "Odpowiedź AI trzeba przeczytać, ocenić i porównać z wiarygodnymi materiałami."
+  "explanation": "Odpowiedź trzeba przeczytać, ocenić i porównać z wiarygodnymi materiałami."
 }
 ```
-
-## Typ `order`
-
-Uczeń układa kroki. `items` zawiera elementy, a `answer` ich poprawną kolejność.
-
-```json
-{
-  "id": "k4-algorytmy-04",
-  "grades": [4],
-  "topic": "algorytmy",
-  "difficulty": 1,
-  "type": "order",
-  "title": "Bezpieczne zapisanie pracy",
-  "story": "Olek kończy rysunek i chce zachować go w odpowiednim folderze.",
-  "prompt": "Ułóż kroki we właściwej kolejności.",
-  "items": [
-    "Wybrać polecenie Zapisz jako",
-    "Wskazać właściwy folder",
-    "Nadać plikowi czytelną nazwę",
-    "Potwierdzić zapis"
-  ],
-  "answer": [
-    "Wybrać polecenie Zapisz jako",
-    "Wskazać właściwy folder",
-    "Nadać plikowi czytelną nazwę",
-    "Potwierdzić zapis"
-  ],
-  "hint": "Zacznij od polecenia, które otwiera okno wyboru miejsca i nazwy.",
-  "explanation": "Najpierw otwieramy zapis, później wybieramy miejsce i nazwę, a na końcu potwierdzamy."
-}
-```
-
-Elementy w `items` muszą być unikalne.
 
 ## Typ `match`
 
@@ -239,12 +208,12 @@ Uczeń wpisuje krótką odpowiedź. W `answers` można dodać kilka równoważny
   "topic": "algorytmy",
   "difficulty": 2,
   "type": "input",
-  "title": "Wynik pętli",
+  "title": "Wynik obliczenia",
   "story": "Program dodaje kolejne liczby do zmiennej wynik.",
   "prompt": "Jaka będzie wartość po dodaniu liczb 1, 2 i 3?",
   "placeholder": "Wpisz liczbę",
   "answers": ["6", "sześć"],
-  "hint": "Dodaj wszystkie trzy liczby po kolei.",
+  "hint": "Dodaj wszystkie trzy liczby.",
   "explanation": "1 + 2 + 3 daje 6."
 }
 ```
@@ -252,9 +221,11 @@ Uczeń wpisuje krótką odpowiedź. W `answers` można dodać kilka równoważny
 ## Kontrola przed wysłaniem zmiany
 
 1. Sprawdź poprawność merytoryczną.
-2. Przeczytaj zadanie jak uczeń z podanej klasy.
-3. Upewnij się, że podpowiedź pomaga, ale nie kopiuje odpowiedzi.
-4. Sprawdź, czy wyjaśnienie mówi także dlaczego.
-5. Uruchom `npm run validate`.
-6. Uruchom aplikację przez `npm run dev` i rozwiąż nowe zadanie.
-7. Nie zmieniaj identyfikatorów istniejących zadań bez potrzeby.
+2. Przeczytaj zadanie z perspektywy ucznia danej klasy.
+3. Upewnij się, że pytanie jest jednoznaczne.
+4. Sprawdź, czy błędne odpowiedzi są wiarygodne, ale nie podchwytliwe.
+5. Upewnij się, że podpowiedź pomaga, ale nie kopiuje odpowiedzi.
+6. Sprawdź, czy wyjaśnienie mówi także dlaczego.
+7. Uruchom `npm run validate`.
+8. Uruchom aplikację przez `npm run dev` i rozwiąż nowe zadanie.
+9. Nie zmieniaj identyfikatorów istniejących zadań bez potrzeby.

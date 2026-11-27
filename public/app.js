@@ -1,9 +1,8 @@
 'use strict';
 
-const APP_VERSION = '0.1.0';
+const APP_VERSION = '0.2.0';
 const MAX_SHARED_TASKS = 30;
 const STUDENT_PAGE_SIZE = 18;
-const TEACHER_PAGE_SIZE = 45;
 
 const TOPICS = {
   komputer: {
@@ -65,7 +64,6 @@ const TOPICS = {
 const TASK_TYPES = {
   choice: { name: 'Jedna odpowiedź', icon: '◉' },
   multi: { name: 'Kilka odpowiedzi', icon: '☑' },
-  order: { name: 'Ułóż kolejność', icon: '↕' },
   match: { name: 'Połącz pary', icon: '🔗' },
   sort: { name: 'Przyporządkuj', icon: '🧺' },
   input: { name: 'Wpisz odpowiedź', icon: '⌨️' }
@@ -118,7 +116,7 @@ const state = {
     topic: 'all',
     difficulty: 'all',
     search: '',
-    count: 10,
+    count: 5,
     limit: STUDENT_PAGE_SIZE
   },
   teacher: {
@@ -128,8 +126,7 @@ const state = {
     type: 'all',
     search: '',
     selected: new Set(),
-    title: 'Cyfrowe misje',
-    limit: TEACHER_PAGE_SIZE
+    title: 'Cyfrowe misje'
   },
   shared: null,
   session: null,
@@ -252,10 +249,6 @@ function onAppClick(event) {
       updateTeacherSelectionUI();
       updateTeacherTaskRow(actionElement.dataset.taskId, false);
       break;
-    case 'teacher-more':
-      state.teacher.limit += TEACHER_PAGE_SIZE;
-      updateTeacherTaskList();
-      break;
     case 'teacher-preset':
       applyTeacherPreset(actionElement.dataset.preset);
       break;
@@ -285,9 +278,6 @@ function onAppClick(event) {
       break;
     case 'skip-task':
       skipCurrentTask();
-      break;
-    case 'move-order':
-      moveOrderItem(Number(actionElement.dataset.index), Number(actionElement.dataset.direction));
       break;
     case 'exit-quiz':
       exitQuiz();
@@ -322,22 +312,18 @@ function onAppChange(event) {
   }
   if (target.matches('[data-teacher-grade]')) {
     toggleSetValue(state.teacher.grades, Number(target.value), target.checked);
-    state.teacher.limit = TEACHER_PAGE_SIZE;
     renderTeacher();
   }
   if (target.matches('[data-teacher-topic]')) {
     toggleSetValue(state.teacher.topics, target.value, target.checked);
-    state.teacher.limit = TEACHER_PAGE_SIZE;
     renderTeacher();
   }
   if (target.id === 'teacher-difficulty') {
     state.teacher.difficulty = target.value;
-    state.teacher.limit = TEACHER_PAGE_SIZE;
     renderTeacher();
   }
   if (target.id === 'teacher-type') {
     state.teacher.type = target.value;
-    state.teacher.limit = TEACHER_PAGE_SIZE;
     renderTeacher();
   }
   if (target.matches('[data-task-select]')) {
@@ -366,7 +352,6 @@ function onAppInput(event) {
   }
   if (target.id === 'teacher-search') {
     state.teacher.search = target.value;
-    state.teacher.limit = TEACHER_PAGE_SIZE;
     clearTimeout(inputTimer);
     inputTimer = setTimeout(updateTeacherTaskList, 120);
   }
@@ -557,7 +542,7 @@ function renderStudent() {
           <label class="field">
             <span>Liczba zadań w zestawie</span>
             <select id="student-count">
-              ${[5,10,15,20].map((count) => `<option value="${count}" ${state.student.count === count ? 'selected' : ''}>${count} zadań</option>`).join('')}
+              ${[3,5,10,15,20].map((count) => `<option value="${count}" ${state.student.count === count ? 'selected' : ''}>${count} zadań</option>`).join('')}
             </select>
           </label>
           <label class="field" style="grid-column:span 2">
@@ -705,10 +690,13 @@ function renderTeacher() {
             <label class="field" style="grid-column:span 2"><span>Szukaj</span><input id="teacher-search" type="search" value="${escapeAttr(state.teacher.search)}" placeholder="Tytuł, temat albo słowo z zadania…"></label>
           </div>
 
-          <div class="filter-actions" style="margin-top:17px">
-            <button class="btn btn-primary" type="button" data-action="teacher-random" data-count="10">🎲 Losuj 10 z filtrów</button>
-            <button class="btn" type="button" data-action="teacher-select-visible">Zaznacz widoczne</button>
-            <button class="btn btn-ghost" type="button" data-action="teacher-clear">Wyczyść wybór</button>
+          <div class="teacher-random-panel" style="margin-top:17px">
+            <span class="field-label">Szybkie losowanie z aktywnych filtrów</span>
+            <div class="filter-actions teacher-random-actions">
+              ${[3,5,10,15,20].map((count) => `<button class="btn ${count === 5 ? 'btn-primary' : ''}" type="button" data-action="teacher-random" data-count="${count}">🎲 ${count}</button>`).join('')}
+              <button class="btn" type="button" data-action="teacher-select-visible">Zaznacz z listy</button>
+              <button class="btn btn-ghost" type="button" data-action="teacher-clear">Wyczyść wybór</button>
+            </div>
           </div>
         </section>
 
@@ -749,16 +737,19 @@ function getTeacherFilteredTasks() {
 }
 
 function teacherTaskListMarkup(filtered = getTeacherFilteredTasks()) {
-  const visible = filtered.slice(0, state.teacher.limit);
-  if (!visible.length) {
+  if (!filtered.length) {
     return `<div class="empty-state"><span class="empty-icon">🔍</span><strong>Brak zadań</strong><p>Zaznacz inną klasę lub temat.</p></div>`;
   }
   return `
-    <div class="catalog-toolbar"><span class="catalog-count">Pokazuję ${visible.length} z ${filtered.length}</span></div>
-    <div class="teacher-task-list">
-      ${visible.map(teacherTaskRow).join('')}
+    <div class="catalog-toolbar">
+      <span class="catalog-count">Pełna lista: ${filtered.length} zadań. Przewijaj i zaznaczaj wybrane pozycje.</span>
+      <span class="badge">Wybrano ${state.teacher.selected.size} / ${MAX_SHARED_TASKS}</span>
     </div>
-    ${visible.length < filtered.length ? `<div class="action-row" style="justify-content:center;margin-top:16px"><button class="btn" type="button" data-action="teacher-more">Pokaż kolejne</button></div>` : ''}`;
+    <div class="teacher-task-scroll" tabindex="0" aria-label="Przewijana lista zadań dla nauczyciela">
+      <div class="teacher-task-list">
+        ${filtered.map(teacherTaskRow).join('')}
+      </div>
+    </div>`;
 }
 
 function teacherTaskRow(task) {
@@ -770,6 +761,7 @@ function teacherTaskRow(task) {
       <span class="teacher-task-copy">
         <strong>${escapeHtml(task.title)}</strong>
         <small>Klasa ${task.grades.join(', ')} · ${escapeHtml(topic.name)} · ${TASK_TYPES[task.type].name}</small>
+        <span class="teacher-task-preview">${escapeHtml(task.story)}</span>
       </span>
       <span class="meta-row"><span class="badge">${DIFFICULTY[task.difficulty].icon}</span></span>
     </label>`;
@@ -850,7 +842,7 @@ function teacherRandomSelection(count) {
 }
 
 function teacherSelectVisible() {
-  const visible = getTeacherFilteredTasks().slice(0, state.teacher.limit);
+  const visible = getTeacherFilteredTasks();
   let added = 0;
   for (const task of visible) {
     if (state.teacher.selected.size >= MAX_SHARED_TASKS) break;
@@ -1010,7 +1002,6 @@ function prepareCurrentTask() {
     attempts: 0,
     finalized: false,
     optionOrder: task.options ? shuffle(task.options.map((_, index) => index)) : [],
-    orderItems: task.type === 'order' ? shuffledDifferent(task.items) : [],
     matchOptions: task.type === 'match' ? shuffle(task.pairs.map((pair) => pair[1])) : [],
     sortItems: task.type === 'sort'
       ? shuffle(task.categories.flatMap((category) => category.items.map((item) => ({ item, category: category.name }))))
@@ -1082,11 +1073,6 @@ function renderAnswer(task) {
           <input type="checkbox" name="answer" value="${originalIndex}">
           <span>${escapeHtml(task.options[originalIndex])}</span>
         </label>`).join('');
-    case 'order':
-      return `<div class="mini-note">Użyj strzałek, aby ustawić kroki we właściwej kolejności.</div>
-        <ol class="order-list" id="order-list">
-          ${current.orderItems.map((item, index) => orderItemMarkup(item, index, current.orderItems.length)).join('')}
-        </ol>`;
     case 'match':
       return `<div class="match-list">
         ${task.pairs.map(([left]) => `
@@ -1116,27 +1102,6 @@ function renderAnswer(task) {
   }
 }
 
-function orderItemMarkup(item, index, total) {
-  return `
-    <li class="order-item" data-item="${escapeAttr(item)}">
-      <span class="order-number">${index + 1}</span>
-      <span>${escapeHtml(item)}</span>
-      <span class="order-controls">
-        <button type="button" data-action="move-order" data-index="${index}" data-direction="-1" ${index === 0 ? 'disabled' : ''} aria-label="Przesuń w górę">↑</button>
-        <button type="button" data-action="move-order" data-index="${index}" data-direction="1" ${index === total - 1 ? 'disabled' : ''} aria-label="Przesuń w dół">↓</button>
-      </span>
-    </li>`;
-}
-
-function moveOrderItem(index, direction) {
-  const current = state.session?.current;
-  if (!current || current.finalized) return;
-  const next = index + direction;
-  if (next < 0 || next >= current.orderItems.length) return;
-  [current.orderItems[index], current.orderItems[next]] = [current.orderItems[next], current.orderItems[index]];
-  const list = document.querySelector('#order-list');
-  if (list) list.innerHTML = current.orderItems.map((item, i) => orderItemMarkup(item, i, current.orderItems.length)).join('');
-}
 
 function checkCurrentAnswer() {
   const session = state.session;
@@ -1177,10 +1142,6 @@ function collectAnswer(task) {
       const checked = [...document.querySelectorAll('input[name="answer"]:checked')].map((input) => Number(input.value)).sort((a, b) => a - b);
       return { empty: checked.length === 0, value: checked };
     }
-    case 'order': {
-      const items = [...document.querySelectorAll('#order-list [data-item]')].map((item) => item.dataset.item);
-      return { empty: items.length === 0, value: items };
-    }
     case 'match': {
       const rows = [...document.querySelectorAll('.match-row')];
       const mapping = Object.fromEntries(rows.map((row) => [row.dataset.left, row.querySelector('select').value]));
@@ -1206,8 +1167,6 @@ function validateAnswer(task, response) {
       return response === task.answer;
     case 'multi':
       return arraysEqual(response, [...task.answer].sort((a, b) => a - b));
-    case 'order':
-      return arraysEqual(response, task.answer);
     case 'match':
       return task.pairs.every(([left, right]) => response[left] === right);
     case 'sort':
@@ -1504,8 +1463,6 @@ function correctAnswerText(task) {
       return task.options[task.answer];
     case 'multi':
       return task.answer.map((index) => task.options[index]).join('; ');
-    case 'order':
-      return task.answer.join(' → ');
     case 'match':
       return task.pairs.map(([left, right]) => `${left}: ${right}`).join('; ');
     case 'sort':
@@ -1535,14 +1492,6 @@ function baseAppUrl() {
   return url;
 }
 
-function shuffledDifferent(items) {
-  const original = [...items];
-  let shuffled = shuffle([...items]);
-  if (items.length > 1 && arraysEqual(shuffled, original)) {
-    shuffled = [...items.slice(1), items[0]];
-  }
-  return shuffled;
-}
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i -= 1) {
