@@ -2,7 +2,7 @@
 
 ## Założenia
 
-Projekt jest statyczną aplikacją typu single-page application bez frameworka i bez backendu. Nie wymaga kont użytkowników i pozostaje możliwy do rozwijania przez osoby znające podstawy HTML, CSS, JavaScript oraz JSON.
+Projekt jest statyczną aplikacją typu single-page application bez frameworka i backendu. Nie wymaga kont użytkowników i może być rozwijany przez osoby znające podstawy HTML, CSS, JavaScript oraz JSON.
 
 ## Przepływ danych
 
@@ -10,12 +10,14 @@ Projekt jest statyczną aplikacją typu single-page application bez frameworka i
 2. `app.js` wczytuje `data/tasks.json` przez `fetch`.
 3. Zadania są indeksowane po stabilnym `id`.
 4. Wybrany widok jest renderowany po stronie przeglądarki.
-5. Sesja quizu istnieje wyłącznie w pamięci bieżącej karty.
+5. Sesja quizu istnieje tylko w pamięci bieżącej karty.
 6. Po odświeżeniu wynik nie jest odtwarzany.
+
+Katalog źródeł `data/sources.json` nie jest potrzebny do rozwiązywania quizu. Służy dokumentacji, kontroli merytorycznej i walidacji repozytorium.
 
 ## Widok nauczyciela
 
-Katalog nauczyciela zawsze renderuje pełną listę zadań pasujących do aktywnych filtrów. Lista ma własny obszar przewijania, dzięki czemu nauczyciel może przeglądać setki pozycji bez utraty panelu filtrów i zestawu.
+Katalog nauczyciela renderuje pełną listę zadań pasujących do aktywnych filtrów. Lista ma własny obszar przewijania, dzięki czemu można przeglądać wiele pozycji bez utraty panelu filtrów i zestawu.
 
 Wybrane zadania są przechowywane w `Set`, co zapobiega duplikatom. Jeden udostępniony zestaw może zawierać maksymalnie 30 pozycji.
 
@@ -42,6 +44,32 @@ Ograniczenia:
 - nauczyciel nie otrzymuje automatycznie wyników,
 - konfiguracja nie jest zabezpieczonym sprawdzianem.
 
+## Typy zadań
+
+Obsługiwane typy:
+
+```text
+choice
+truefalse
+multi
+match
+input
+```
+
+Typy `sort` i `order` nie są obsługiwane. Zadania dotyczące procesów powinny pytać o jednoznaczny krok, warunek, cel, błąd albo najlepszą decyzję.
+
+## Katalog wersji 0.3.0
+
+- 1686 zadań,
+- 1246 zadań `choice`,
+- 400 zadań `truefalse`,
+- 11 zadań `multi`,
+- 25 zadań `match`,
+- 4 zadania `input`,
+- 478 zadań z cyberbezpieczeństwa,
+- 246 zadań o AI,
+- 14 źródeł merytorycznych.
+
 ## Budowanie
 
 Źródła strony znajdują się w `public`. Skrypt `scripts/build.mjs`:
@@ -58,37 +86,37 @@ Katalog `dist` jest gotowym artefaktem statycznej strony.
 `scripts/validate-tasks.mjs` sprawdza:
 
 - format i unikalność identyfikatorów,
-- zakres klas,
+- klasy od 3 do 8,
 - listę tematów i pięciu obsługiwanych typów,
-- obecność treści,
+- obecność treści, podpowiedzi i wyjaśnienia,
 - indeksy poprawnych odpowiedzi,
-- unikalność opcji, par oraz kategorii,
-- minimalną liczbę zadań,
-- co najmniej 108 zadań z cyberbezpieczeństwa,
-- przewagę zadań jednokrotnego wyboru,
-- większą liczbę zadań dla klas 5 i 6 niż dla pozostałych klas.
+- unikalność opcji i par,
+- dokładną liczbę zadań według klasy, tematu i typu,
+- 400 zadań Prawda lub Fałsz z równowagą 200 do 200,
+- minimalną długość kontekstu w zadaniach Prawda lub Fałsz,
+- co najmniej 350 dłuższych scenariuszy cyberbezpieczeństwa,
+- brak zadań `sort`,
+- brak dokładnie powtórzonych historii i pytań,
+- udział pytań jednokrotnego wyboru,
+- rozkład poprawnych odpowiedzi między pozycjami,
+- częstość, z jaką poprawna odpowiedź jest najdłuższa,
+- średnią długość odpowiedzi poprawnych i błędnych,
+- obecność oraz poprawność kluczy źródeł,
+- unikalność i adresy HTTPS w katalogu źródeł.
 
 Błąd walidacji zatrzymuje workflow przed wdrożeniem.
 
-## Tryby zadań
+## Audyt długości odpowiedzi
 
-Obsługiwane typy:
+W wersji 0.2.0 poprawna odpowiedź była jednoznacznie najdłuższa w około 84,9% pytań `choice`. W wersji 0.3.0 udział wynosi około 21,6%.
 
-```text
-choice
-multi
-match
-sort
-input
-```
-
-Typ `order` nie jest obsługiwany. Zadania dotyczące procesów powinny pytać o jednoznaczny krok, warunek, cel lub najlepszą decyzję.
+Generator treści nie wydłuża sztucznie poprawnych odpowiedzi. W zadaniach, w których długość tworzyłaby nadmierną podpowiedź, uzupełnia jeden z wiarygodnych dystraktorów neutralnym doprecyzowaniem. Walidator pilnuje, aby wzorzec nie wrócił w kolejnych zmianach.
 
 ## Tryb offline
 
 `service-worker.js` zapisuje podstawowe pliki aplikacji w Cache Storage. Po pierwszej poprawnej wizycie przez HTTPS aplikacja może otworzyć się bez połączenia z internetem.
 
-Numer pamięci podręcznej korzysta z wersji w `package.json`. Przy zmianie plików przeznaczonych do publikacji należy podnieść wersję, aby użytkownicy szybciej otrzymali nowy zestaw zasobów.
+Numer pamięci podręcznej korzysta z wersji w `package.json`. Przy zmianie plików przeznaczonych do publikacji należy podnieść wersję, aby użytkownicy otrzymali nowy zestaw zasobów.
 
 ## Motyw
 
@@ -109,5 +137,5 @@ Kod uruchamiany przez ucznia nie pobiera bibliotek z CDN. Daje to:
 - szybsze i bardziej przewidywalne uruchamianie,
 - łatwiejszą pracę offline,
 - mniej zależności od zewnętrznych usług,
-- brak dodatkowych skryptów mogących śledzić użytkownika,
+- brak dodatkowych skryptów śledzących,
 - prostsze wdrażanie jako statyczna strona.

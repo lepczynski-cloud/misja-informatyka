@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = '0.2.0';
+const APP_VERSION = '0.3.0';
 const MAX_SHARED_TASKS = 30;
 const STUDENT_PAGE_SIZE = 18;
 
@@ -63,9 +63,9 @@ const TOPICS = {
 
 const TASK_TYPES = {
   choice: { name: 'Jedna odpowiedź', icon: '◉' },
+  truefalse: { name: 'Prawda / fałsz', icon: '✓✗' },
   multi: { name: 'Kilka odpowiedzi', icon: '☑' },
   match: { name: 'Połącz pary', icon: '🔗' },
-  sort: { name: 'Przyporządkuj', icon: '🧺' },
   input: { name: 'Wpisz odpowiedź', icon: '⌨️' }
 };
 
@@ -455,7 +455,7 @@ function renderHome() {
       ${statCard(state.tasks.length, 'gotowe zadania')}
       ${statCard('6', 'poziomów, klasy 3–8')}
       ${statCard(Object.keys(TOPICS).length, 'obszarów tematycznych')}
-      ${statCard(Object.keys(TASK_TYPES).length, 'rodzajów interakcji')}
+      ${statCard(state.tasks.filter((task) => task.type === 'truefalse').length, 'zadań Prawda / Fałsz')}
     </section>
 
     <section class="section-block">
@@ -1001,11 +1001,10 @@ function prepareCurrentTask() {
   const current = {
     attempts: 0,
     finalized: false,
-    optionOrder: task.options ? shuffle(task.options.map((_, index) => index)) : [],
-    matchOptions: task.type === 'match' ? shuffle(task.pairs.map((pair) => pair[1])) : [],
-    sortItems: task.type === 'sort'
-      ? shuffle(task.categories.flatMap((category) => category.items.map((item) => ({ item, category: category.name }))))
-      : []
+    optionOrder: task.options
+      ? (task.type === 'truefalse' ? task.options.map((_, index) => index) : shuffle(task.options.map((_, index) => index)))
+      : [],
+    matchOptions: task.type === 'match' ? shuffle(task.pairs.map((pair) => pair[1])) : []
   };
   state.session.current = current;
 }
@@ -1062,11 +1061,14 @@ function renderAnswer(task) {
   const current = state.session.current;
   switch (task.type) {
     case 'choice':
-      return current.optionOrder.map((originalIndex) => `
-        <label class="option-label" data-option-index="${originalIndex}">
+    case 'truefalse': {
+      const options = current.optionOrder.map((originalIndex) => `
+        <label class="option-label${task.type === 'truefalse' ? ' true-false-option' : ''}" data-option-index="${originalIndex}">
           <input type="radio" name="answer" value="${originalIndex}">
           <span>${escapeHtml(task.options[originalIndex])}</span>
         </label>`).join('');
+      return task.type === 'truefalse' ? `<div class="true-false-grid">${options}</div>` : options;
+    }
     case 'multi':
       return `<div class="mini-note">Może być więcej niż jedna poprawna odpowiedź.</div>` + current.optionOrder.map((originalIndex) => `
         <label class="option-label" data-option-index="${originalIndex}">
@@ -1081,17 +1083,6 @@ function renderAnswer(task) {
             <select aria-label="Dopasuj odpowiedź do ${escapeAttr(left)}">
               <option value="">Wybierz odpowiedź</option>
               ${current.matchOptions.map((right) => `<option value="${escapeAttr(right)}">${escapeHtml(right)}</option>`).join('')}
-            </select>
-          </label>`).join('')}
-      </div>`;
-    case 'sort':
-      return `<div class="sort-list">
-        ${current.sortItems.map(({ item }) => `
-          <label class="sort-row" data-item="${escapeAttr(item)}">
-            <strong>${escapeHtml(item)}</strong>
-            <select aria-label="Wybierz kategorię dla ${escapeAttr(item)}">
-              <option value="">Wybierz kategorię</option>
-              ${task.categories.map((category) => `<option value="${escapeAttr(category.name)}">${escapeHtml(category.name)}</option>`).join('')}
             </select>
           </label>`).join('')}
       </div>`;
@@ -1134,7 +1125,8 @@ function checkCurrentAnswer() {
 
 function collectAnswer(task) {
   switch (task.type) {
-    case 'choice': {
+    case 'choice':
+    case 'truefalse': {
       const checked = document.querySelector('input[name="answer"]:checked');
       return { empty: !checked, value: checked ? Number(checked.value) : null };
     }
@@ -1145,11 +1137,6 @@ function collectAnswer(task) {
     case 'match': {
       const rows = [...document.querySelectorAll('.match-row')];
       const mapping = Object.fromEntries(rows.map((row) => [row.dataset.left, row.querySelector('select').value]));
-      return { empty: Object.values(mapping).some((value) => !value), value: mapping };
-    }
-    case 'sort': {
-      const rows = [...document.querySelectorAll('.sort-row')];
-      const mapping = Object.fromEntries(rows.map((row) => [row.dataset.item, row.querySelector('select').value]));
       return { empty: Object.values(mapping).some((value) => !value), value: mapping };
     }
     case 'input': {
@@ -1164,13 +1151,12 @@ function collectAnswer(task) {
 function validateAnswer(task, response) {
   switch (task.type) {
     case 'choice':
+    case 'truefalse':
       return response === task.answer;
     case 'multi':
       return arraysEqual(response, [...task.answer].sort((a, b) => a - b));
     case 'match':
       return task.pairs.every(([left, right]) => response[left] === right);
-    case 'sort':
-      return task.categories.every((category) => category.items.every((item) => response[item] === category.name));
     case 'input':
       return task.answers.some((answer) => normalizeText(answer) === normalizeText(response));
     default:
@@ -1207,8 +1193,8 @@ function disableCurrentInputs() {
 }
 
 function markChoiceAnswers(task) {
-  if (!['choice', 'multi'].includes(task.type)) return;
-  const correct = task.type === 'choice' ? [task.answer] : task.answer;
+  if (!['choice', 'truefalse', 'multi'].includes(task.type)) return;
+  const correct = ['choice', 'truefalse'].includes(task.type) ? [task.answer] : task.answer;
   document.querySelectorAll('.option-label').forEach((label) => {
     const index = Number(label.dataset.optionIndex);
     const input = label.querySelector('input');
@@ -1410,7 +1396,7 @@ function renderAbout() {
       <div>
         <p class="eyebrow">O projekcie</p>
         <h1>Mały projekt, otwarta droga rozwoju</h1>
-        <p>Aplikacja powstała jako przyjemne uzupełnienie lekcji informatyki. Nie zastępuje Scratcha, arkusza, edytora tekstu ani pracy nauczyciela.</p>
+        <p>Aplikacja powstała jako przyjemne uzupełnienie lekcji informatyki. Zawiera ${state.tasks.length} zadań, ale nie zastępuje Scratcha, arkusza, edytora tekstu ani pracy nauczyciela.</p>
       </div>
       <span class="badge badge-build">🚧 W fazie budowy</span>
     </header>
@@ -1441,14 +1427,14 @@ function renderAbout() {
 
       <article class="about-card">
         <h2>🛠️ Rozbudowa</h2>
-        <p>Zadania znajdują się w jednym pliku JSON i są sprawdzane automatycznie przez GitHub Actions. Dokumentacja repozytorium opisuje schemat oraz dodawanie nowych treści.</p>
+        <p>Zadania i katalog źródeł znajdują się w plikach JSON oraz są sprawdzane automatycznie przez GitHub Actions. Dokumentacja repozytorium opisuje schemat, źródła i dodawanie nowych treści.</p>
         <p>Pomysły, poprawki i nowe zadania można zgłaszać przez GitHub Issues.</p>
       </article>
     </div>
 
     <section class="section-block panel">
       <div class="panel-title"><div><h2>Stan projektu</h2><p>Wersja ${APP_VERSION} jest gotowa do testów, ale katalog i mechaniki będą nadal rozwijane.</p></div></div>
-      <div class="warning-box">Treści zostały przygotowane z myślą o zakresie edukacji informatycznej w klasach 3–8, ale nie są oficjalnym podręcznikiem ani pełnym programem nauczania. Nauczyciel powinien dobrać zadania do swojej klasy.</div>
+      <div class="warning-box">Treści zostały przygotowane z myślą o zakresie edukacji informatycznej w klasach 3–8 i sprawdzone na podstawie katalogu źródeł w repozytorium. Nie są jednak oficjalnym podręcznikiem ani pełnym programem nauczania. Nauczyciel powinien dobrać zadania do swojej klasy.</div>
       <div class="action-row" style="margin-top:18px">
         <button class="btn btn-primary" type="button" data-view="student">Otwórz zadania</button>
         <button class="btn" type="button" data-view="teacher">Otwórz kreator</button>
@@ -1460,13 +1446,12 @@ function renderAbout() {
 function correctAnswerText(task) {
   switch (task.type) {
     case 'choice':
+    case 'truefalse':
       return task.options[task.answer];
     case 'multi':
       return task.answer.map((index) => task.options[index]).join('; ');
     case 'match':
       return task.pairs.map(([left, right]) => `${left}: ${right}`).join('; ');
-    case 'sort':
-      return task.categories.map((category) => `${category.name}: ${category.items.join(', ')}`).join('; ');
     case 'input':
       return task.answers[0];
     default:

@@ -1,0 +1,112 @@
+[
+  {
+    "key": "MEN-PP-2026",
+    "title": "Nowe podstawy programowe dla szkoły podstawowej, rozporządzenia podpisane",
+    "organization": "Ministerstwo Edukacji Narodowej",
+    "url": "https://www.gov.pl/web/edukacja/nowe-podstawy-programowe-wychowania-przedszkolnego-i-ksztalcenia-ogolnego-dla-szkoly-podstawowej-wraz-ze-zmianami-w-ramowych-planach-nauczania-dla-publicznych-szkol-podstawowych--rozporzadzenia-podpisane",
+    "additionalUrls": [
+      "https://eli.gov.pl/api/acts/DU/2026/378/text/O/D20260378.pdf"
+    ],
+    "areas": ["zakres szkolny", "kompetencje cyfrowe", "bezpieczeństwo", "AI"]
+  },
+  {
+    "key": "ZPE-INFORMATYKA",
+    "title": "Podstawa programowa informatyki dla szkoły podstawowej",
+    "organization": "Zintegrowana Platforma Edukacyjna",
+    "url": "https://zpe.gov.pl/podstawa-programowa/szkola-podstawowa/informatyka",
+    "areas": ["zakres szkolny", "algorytmy", "dane", "sieci", "tworzenie cyfrowe"]
+  },
+  {
+    "key": "CERT-PHISHING",
+    "title": "Rozpoznanie phishingu",
+    "organization": "CERT Polska",
+    "url": "https://wiedza.cert.pl/bezpieczenstwo-osobiste/rozpoznanie-phishingu/",
+    "areas": ["phishing", "fałszywe domeny", "wiadomości e-mail", "weryfikacja nadawcy"]
+  },
+  {
+    "key": "CERT-TELEFON",
+    "title": "Bezpieczny telefon",
+    "organization": "CERT Polska",
+    "url": "https://wiedza.cert.pl/bezpieczenstwo-osobiste/bezpieczny-telefon/",
+    "areas": ["SMS", "telefon", "aplikacje", "uprawnienia", "aktualizacje"]
+  },
+  {
+    "key": "CERT-HASLA",
+    "title": "Hasła i bezpieczne logowanie",
+    "organization": "CERT Polska",
+    "url": "https://wiedza.cert.pl/dobre-praktyki/hasla/",
+    "areas": ["hasła", "menedżer haseł", "dodatkowe zabezpieczenie", "passkeys"]
+  },
+  {
+    "key": "CERT-WYCIEK",
+    "title": "Postępowanie po wycieku danych",
+    "organization": "CERT Polska",
+    "url": "https://wiedza.cert.pl/sciezki-postepowania/wycieki-danych/",
+    "areas": ["wyciek danych", "zmiana haseł", "reakcja na incydent"]
+  },
+  {
+    "key": "GOV-PHISHING",
+    "title": "Czym jest phishing i jak rozpoznawać podejrzane wiadomości e-mail oraz SMS-y",
+    "organization": "Portal Gov.pl",
+    "url": "https://www.gov.pl/web/baza-wiedzy/czym-jest-phishing-i-jak-nie-dac-sie-nabrac-na-podejrzane-widomosci-e-mail-oraz-sms-y",
+    "additionalUrls": [
+      "https://www.gov.pl/web/baza-wiedzy/dostales-niepokojacy-sms-albo-email-zglos-go-do-cert-polska-csirt-nask"
+    ],
+    "areas": ["phishing", "smishing", "zgłaszanie SMS na 8080", "fałszywe strony"]
+  },
+  {
+    "key": "UODO-DZIECI",
+    "title": "Materiały edukacyjne o ochronie danych i prywatności dzieci",
+    "organization": "Urząd Ochrony Danych Osobowych",
+    "url": "https://uodo.gov.pl/pl/645/4277",
+    "areas": ["prywatność", "dane osobowe", "publikowanie zdjęć", "bezpieczeństwo dzieci"]
+  },
+  {
+    "key": "OSE-AI",
+    "title": "Generatywna sztuczna inteligencja, bezpieczne korzystanie",
+    "organization": "Ogólnopolska Sieć Edukacyjna",
+    "url": "https://ose.gov.pl/aktualnosci/wpis/bezpieczni-w-sieci-z-ose-generatywna-sztuczna-inteligencja/",
+    "areas": ["AI", "weryfikacja", "prywatność", "odpowiedzialne użycie"]
+  },
+  {
+    "key": "ZPE-AI-HIGIENA",
+    "title": "Jak bezpiecznie korzystać ze sztucznej inteligencji",
+    "organization": "Zintegrowana Platforma Edukacyjna",
+    "url": "https://zpe.gov.pl/watek/LP1AWqwdc2/84/a/jak-bezpiecznie-korzystac-ze-sztucznej-inteligencji-higiena-cyfrowa-ai/D6CPU9JZQ",
+    "areas": ["AI", "higiena cyfrowa", "sprawdzanie odpowiedzi", "dane osobowe"]
+  },
+  {
+    "key": "GOOGLE-WYSZUKIWANIE",
+    "title": "Uściślanie wyników wyszukiwania",
+    "organization": "Google Search Help",
+    "url": "https://support.google.com/websearch/answer/2466433?hl=pl-ZZ",
+    "areas": ["wyszukiwanie", "operatory", "cudzysłów", "site", "wykluczanie słów"]
+  },
+  {
+    "key": "MS-PLIKI",
+    "title": "Pliki, rozszerzenia i wyszukiwanie w systemie Windows",
+    "organization": "Microsoft Support",
+    "url": "https://support.microsoft.com/pl-pl/windows/experience/storage-filemanagement/common-file-name-extensions-in-windows",
+    "additionalUrls": [
+      "https://support.microsoft.com/pl-pl/windows/experience/storage-filemanagement/find-your-files-and-apps-in-windows"
+    ],
+    "areas": ["pliki", "rozszerzenia", "foldery", "wyszukiwanie plików"]
+  },
+  {
+    "key": "CC-LICENCJE",
+    "title": "Creative Commons Licenses",
+    "organization": "Creative Commons",
+    "url": "https://creativecommons.org/share-your-work/use-remix/cc-licenses/",
+    "additionalUrls": [
+      "https://creativecommons.org/reusing-cc-licensed-content/"
+    ],
+    "areas": ["licencje", "uznanie autorstwa", "modyfikacje", "ponowne wykorzystanie"]
+  },
+  {
+    "key": "MDN-WEB",
+    "title": "HTML accessibility",
+    "organization": "MDN Web Docs",
+    "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Accessibility/HTML",
+    "areas": ["WWW", "dostępność", "teksty alternatywne", "opisowe odnośniki"]
+  }
+]

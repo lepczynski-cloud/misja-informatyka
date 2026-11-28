@@ -6,6 +6,7 @@ const APP_SHELL = [
   './app.js',
   './manifest.webmanifest',
   './data/tasks.json',
+  './data/sources.json',
   './assets/logo.svg',
   './assets/favicon.svg',
   './assets/icon-192.png',

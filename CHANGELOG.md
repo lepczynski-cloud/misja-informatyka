@@ -1,49 +1,55 @@
 # Historia zmian
 
-Wszystkie istotne zmiany projektu są opisywane w tym pliku.
+W projekcie stosowany jest format zbliżony do Keep a Changelog.
 
-## 0.2.0 - 2026-11-27
+## 0.3.0 - 2026-11-28
 
 ### Dodano
 
-- 486 zadań dla klas 3-8,
-- 108 zadań z cyberbezpieczeństwa,
-- 66 praktycznych zadań o korzystaniu z AI, wyszukiwaniu i poprawianiu poleceń,
-- wybór krótkich zestawów 3 lub 5 pytań,
-- pełną przewijaną listę zadań w kreatorze nauczyciela,
-- podgląd sytuacji zadania bez otwierania quizu,
-- dodatkowe kontrole proporcji katalogu i rozkładu poprawnych odpowiedzi w walidatorze.
+- 800 nowych zadań jednokrotnego wyboru,
+- 400 nowych zadań Prawda lub Fałsz,
+- łącznie 1686 zadań,
+- 478 zadań z cyberbezpieczeństwa,
+- 246 zadań dotyczących świadomego korzystania z AI,
+- dłuższe przykładowe wiadomości e-mail i SMS do analizy,
+- duże przyciski Prawda i Fałsz,
+- katalog 14 źródeł w `public/data/sources.json`,
+- dokumentację źródeł w `docs/SOURCES.md`,
+- walidację kluczy źródeł i adresów HTTPS.
 
 ### Zmieniono
 
-- klasy 5 i 6 mają największy katalog, po 105 zadań,
-- 436 zadań wykorzystuje jednokrotny wybór,
-- pytania o procesy zostały doprecyzowane jako jednoznaczne wybory,
-- dokumentację rozbudowy katalogu i zasady tworzenia treści,
-- rozkład poprawnych odpowiedzi oraz zróżnicowanie podpowiedzi w obszarach AI i cyberbezpieczeństwa,
-- numer wersji pamięci podręcznej aplikacji.
+- ograniczono wzorzec, w którym najdłuższa odpowiedź wskazuje rozwiązanie,
+- poprawna odpowiedź jest jednoznacznie najdłuższa w około 22% zamiast około 85% pytań `choice`,
+- poprawiono odmianę polskich imion, tematów i nazw przedmiotów w generowanych scenariuszach,
+- rozbudowano walidację długości odpowiedzi oraz rozkładu pozycji,
+- wszystkie zadania wymagające niejednoznacznego porządkowania zastąpiono innymi typami,
+- dokumentacja opisuje pięć aktualnych typów zadań.
 
-### Usunięto
+### Zachowano
 
-- typ zadania polegający na układaniu kroków,
-- sekcję dotyczącą publikacji z głównego pliku README.
+- komunikat, że projekt jest w fazie budowy,
+- brak kont, reklam, analityki i centralnej bazy wyników,
+- kreator zestawów dla nauczyciela,
+- pełny katalog dla ucznia,
+- motyw systemowy, jasny i ciemny,
+- automatyczną walidację i publikację przez GitHub Actions.
+
+## 0.2.0 - 2026-11-27
+
+- 486 zadań dla klas 3–8,
+- 108 zadań z cyberbezpieczeństwa,
+- 66 zadań o AI,
+- wybór zestawów 3, 5, 10, 15 lub 20 pytań,
+- pełna przewijana lista zadań dla nauczyciela,
+- rezygnacja z niejednoznacznych zadań polegających na porządkowaniu kroków,
+- rozbudowany walidator katalogu.
 
 ## 0.1.0 - 2026-11-26
 
-### Dodano
-
-- tryb samodzielnej nauki dla ucznia,
-- kreator zestawów dla nauczyciela,
-- udostępnianie zestawu przez link,
-- 162 zadania dla klas 3-8,
-- 9 obszarów tematycznych,
-- podpowiedzi i wyjaśnienia,
-- gwiazdki, odznaki, fanfary i konfetti,
-- powtarzanie trudnych zadań,
-- dyplom do wydruku,
-- motyw systemowy, jasny i ciemny,
-- responsywny interfejs,
-- działanie offline po pierwszej wizycie,
-- automatyczną walidację katalogu,
-- budowanie i publikację przez GitHub Actions,
-- dokumentację dodawania zadań i rozwoju projektu.
+- pierwsza publiczna wersja aplikacji,
+- tryb ucznia i nauczyciela,
+- udostępnianie zestawów przez link,
+- nagrody, odznaki, fanfary i konfetti,
+- działanie offline,
+- motyw systemowy, jasny i ciemny.

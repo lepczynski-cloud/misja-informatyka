@@ -1,33 +1,42 @@
 # Dodawanie zadań
 
-Wszystkie zadania znajdują się w pliku:
+## Pliki danych
+
+Zadania znajdują się w:
 
 ```text
 public/data/tasks.json
 ```
 
-Plik zawiera jedną tablicę obiektów JSON. Po każdej zmianie uruchom:
+Źródła merytoryczne znajdują się w:
+
+```text
+public/data/sources.json
+```
+
+Po każdej zmianie uruchom:
 
 ```bash
 npm run validate
 ```
 
-Walidator sprawdza identyfikatory, klasy, tematy, trudność, wymagane pola, odpowiedzi oraz najważniejsze założenia całego katalogu.
+## Wspólne pola
 
-## Pola wspólne
+Każde zadanie powinno mieć:
 
 ```json
 {
-  "id": "k5-bezpieczenstwo-04",
+  "id": "k5-bezpieczenstwo-120",
   "grades": [5],
   "topic": "bezpieczenstwo",
   "difficulty": 2,
   "type": "choice",
   "title": "Krótki tytuł",
-  "story": "Konkretna sytuacja wprowadzająca ucznia w zadanie.",
-  "prompt": "Jasne pytanie lub polecenie.",
-  "hint": "Podpowiedź, która pomaga pomyśleć, ale nie zdradza od razu rozwiązania.",
-  "explanation": "Wyjaśnienie, dlaczego odpowiedź jest poprawna."
+  "story": "Sytuacja, którą analizuje uczeń.",
+  "prompt": "Jasne polecenie albo pytanie.",
+  "hint": "Podpowiedź pomagająca pomyśleć, ale bez zdradzania odpowiedzi.",
+  "explanation": "Wyjaśnienie zasady i powodu poprawności odpowiedzi.",
+  "sourceKeys": ["CERT-PHISHING"]
 }
 ```
 
@@ -36,34 +45,32 @@ Walidator sprawdza identyfikatory, klasy, tematy, trudność, wymagane pola, odp
 Format:
 
 ```text
-k{klasa}-{temat}-{numer}
+k<klasa>-<temat>-<numer>
 ```
 
-Przykład:
+Przykłady:
 
 ```text
-k5-bezpieczenstwo-04
+k3-komputer-087
+k6-ai-142
+k8-bezpieczenstwo-205
 ```
 
-Identyfikator musi być unikalny i stabilny. Linki przygotowane przez nauczycieli odwołują się właśnie do `id`.
+Identyfikator musi być unikalny i stabilny. Nie zmieniaj go po opublikowaniu, ponieważ może znajdować się w linkach przygotowanych przez nauczyciela.
 
 ### `grades`
 
-Lista klas, dla których zadanie jest odpowiednie:
+Dozwolone klasy:
 
 ```json
-"grades": [5]
-```
-
-Można wskazać kilka klas:
-
-```json
-"grades": [5, 6]
+[3]
+[5, 6]
+[7, 8]
 ```
 
 ### `topic`
 
-Dopuszczalne wartości:
+Dozwolone wartości:
 
 ```text
 komputer
@@ -79,153 +86,185 @@ prawo
 
 ### `difficulty`
 
-- `1` oznacza rozgrzewkę,
-- `2` oznacza wyzwanie,
-- `3` oznacza misję specjalną.
+```text
+1: łatwe
+2: średnie
+3: trudniejsze
+```
 
-Trudność należy oceniać względem wskazanej klasy.
+### `sourceKeys`
+
+Wpisz co najmniej jeden klucz istniejący w `public/data/sources.json`.
+
+Przykład:
+
+```json
+"sourceKeys": ["CERT-PHISHING", "GOV-PHISHING"]
+```
+
+Klucz opisuje podstawę merytoryczną pytania. Nie oznacza zatwierdzenia zadania przez daną instytucję.
 
 ## Typ `choice`
 
-Jedna poprawna odpowiedź. `answer` jest indeksem elementu w tablicy `options`, liczonym od zera.
+Jedna poprawna odpowiedź.
 
 ```json
 {
-  "id": "k5-internet-04",
+  "id": "k5-bezpieczenstwo-120",
   "grades": [5],
-  "topic": "internet",
-  "difficulty": 1,
+  "topic": "bezpieczenstwo",
+  "difficulty": 2,
   "type": "choice",
-  "title": "Adres strony",
-  "story": "Maja dostała kilka podobnych adresów i szuka oficjalnej strony muzeum.",
-  "prompt": "Który fragment adresu warto sprawdzić szczególnie uważnie?",
+  "title": "SMS o dopłacie",
+  "story": "Uczeń dostaje SMS z linkiem i informacją, że paczka zostanie odesłana za 20 minut. Nie oczekuje żadnej przesyłki.",
+  "prompt": "Co powinien zrobić najpierw?",
+  "hint": "Nie korzystaj z kanału wskazanego przez podejrzaną wiadomość.",
+  "explanation": "Presja czasu, mała dopłata i link mogą wskazywać na smishing. Przesyłkę należy sprawdzić w oficjalnej aplikacji lub na znanej stronie.",
   "options": [
-    "Kolor przycisku",
-    "Liczbę obrazków",
-    "Nazwę domeny",
-    "Godzinę na zegarze"
+    "Otworzyć link, bo kwota jest niewielka",
+    "Sprawdzić przesyłki samodzielnie w oficjalnej aplikacji",
+    "Odpisać nadawcy numerem karty",
+    "Przesłać link koledze do przetestowania"
   ],
-  "answer": 2,
-  "hint": "Pomyśl, który element wskazuje właściciela miejsca w sieci.",
-  "explanation": "Nazwa domeny pomaga rozpoznać, do jakiej strony naprawdę prowadzi adres."
+  "answer": 1,
+  "sourceKeys": ["CERT-PHISHING", "CERT-TELEFON"]
 }
 ```
 
-Pytanie musi mieć jedną jednoznacznie najlepszą odpowiedź. Nie należy tworzyć zadań, w których kilka czynności można poprawnie wykonać w dowolnej kolejności.
+Wymagane są co najmniej cztery odpowiedzi. `answer` jest indeksem, licząc od zera.
 
-Pozycję poprawnej odpowiedzi należy zmieniać między zadaniami. Walidator kontroluje rozkład indeksów w całym katalogu.
+## Typ `truefalse`
 
-## Typ `multi`
-
-Kilka poprawnych odpowiedzi. `answer` jest tablicą indeksów.
+Dłuższy kontekst i ocena jednego stwierdzenia.
 
 ```json
 {
-  "id": "k6-ai-04",
+  "id": "k6-internet-130",
   "grades": [6],
-  "topic": "ai",
+  "topic": "internet",
   "difficulty": 2,
+  "type": "truefalse",
+  "title": "Kłódka nie potwierdza właściciela",
+  "story": "Uczeń otwiera stronę z wiadomości. W pasku adresu widzi kłódkę, ale domena różni się jedną literą od adresu szkolnej usługi.",
+  "prompt": "Prawda czy fałsz? Sam symbol kłódki wystarcza, aby uznać stronę za prawdziwą i wpisać na niej hasło.",
+  "hint": "Szyfrowanie połączenia i wiarygodność właściciela to różne kwestie.",
+  "explanation": "HTTPS chroni transmisję do wskazanej domeny. Nie potwierdza, że domena należy do oczekiwanej organizacji.",
+  "options": ["Prawda", "Fałsz"],
+  "answer": 1,
+  "sourceKeys": ["CERT-PHISHING"]
+}
+```
+
+Wymagania:
+
+- `options` musi mieć dokładnie `Prawda` i `Fałsz`,
+- `answer` ma wartość `0` dla Prawdy albo `1` dla Fałszu,
+- kontekst powinien mieć co najmniej 100 znaków,
+- stwierdzenie powinno być jednoznaczne,
+- unikaj podwójnego przeczenia,
+- wyjaśnienie powinno uzasadniać fakt, a nie tylko powtarzać odpowiedź.
+
+## Typ `multi`
+
+Kilka poprawnych odpowiedzi.
+
+```json
+{
+  "id": "k7-bezpieczenstwo-210",
+  "grades": [7],
+  "topic": "bezpieczenstwo",
+  "difficulty": 3,
   "type": "multi",
-  "title": "Sprawdź podpowiedź narzędzia",
-  "story": "Narzędzie podało trzy fakty potrzebne do prezentacji.",
-  "prompt": "Co warto zrobić przed wykorzystaniem odpowiedzi?",
+  "title": "Sygnały phishingu",
+  "story": "Wiadomość prosi o pilne logowanie przez link i podanie kodu z aplikacji.",
+  "prompt": "Które elementy powinny wzbudzić podejrzenie?",
+  "hint": "Może być więcej niż jedna odpowiedź.",
+  "explanation": "Presja, nieoczekiwany link i prośba o sekret są typowymi sygnałami próby wyłudzenia.",
   "options": [
-    "Porównać informacje z wiarygodnym źródłem",
-    "Sprawdzić, czy odpowiedź pasuje do pytania",
-    "Wkleić ją bez czytania",
-    "Usunąć nazwę autora źródła"
+    "Presja czasu",
+    "Prośba o kod logowania",
+    "Link do innej domeny",
+    "Poprawna polska interpunkcja"
   ],
-  "answer": [0, 1],
-  "hint": "Dobra odpowiedź nadal może zawierać błąd albo dotyczyć innego problemu.",
-  "explanation": "Odpowiedź trzeba przeczytać, ocenić i porównać z wiarygodnymi materiałami."
+  "answer": [0, 1, 2],
+  "sourceKeys": ["CERT-PHISHING"]
 }
 ```
 
 ## Typ `match`
 
-Uczeń łączy lewe elementy z prawymi. Każda prawa odpowiedź musi być unikalna.
+Łączenie elementów w pary.
 
 ```json
 {
-  "id": "k5-komputer-04",
-  "grades": [5],
+  "id": "k4-komputer-130",
+  "grades": [4],
   "topic": "komputer",
   "difficulty": 1,
   "type": "match",
-  "title": "Pliki w odpowiednich szufladach",
-  "story": "W szkolnym folderze pomieszały się dokumenty, grafiki i nagrania.",
-  "prompt": "Połącz rozszerzenie z typem pliku.",
+  "title": "Plik i zastosowanie",
+  "story": "Uczeń porządkuje materiały w folderze projektu.",
+  "prompt": "Połącz rozszerzenie z najczęstszym rodzajem zawartości.",
+  "hint": "Spójrz na końcówkę nazwy pliku.",
+  "explanation": "Rozszerzenie pomaga systemowi i użytkownikowi rozpoznać typ pliku.",
   "pairs": [
     [".png", "obraz"],
     [".mp3", "dźwięk"],
-    [".pdf", "dokument"],
-    [".mp4", "film"]
+    [".txt", "tekst"]
   ],
-  "hint": "Przypomnij sobie rozszerzenia widoczne na końcu nazw plików.",
-  "explanation": "Rozszerzenie podpowiada systemowi i użytkownikowi, jakiego rodzaju dane zawiera plik."
+  "sourceKeys": ["MS-PLIKI"]
 }
 ```
 
-## Typ `sort`
-
-Uczeń przyporządkowuje elementy do kategorii.
-
-```json
-{
-  "id": "k4-bezpieczenstwo-04",
-  "grades": [4],
-  "topic": "bezpieczenstwo",
-  "difficulty": 1,
-  "type": "sort",
-  "title": "Mogę podać czy zachowuję dla siebie?",
-  "story": "Gra pyta o kilka informacji potrzebnych rzekomo do odebrania nagrody.",
-  "prompt": "Przyporządkuj informacje do właściwych kategorii.",
-  "categories": [
-    {
-      "name": "Można podać w szkolnym zadaniu",
-      "items": ["ulubiony kolor", "nazwa wymyślonej drużyny"]
-    },
-    {
-      "name": "Dane prywatne",
-      "items": ["hasło", "adres zamieszkania", "kod otrzymany SMS-em"]
-    }
-  ],
-  "hint": "Dane pozwalające wejść na konto lub odnaleźć konkretną osobę wymagają szczególnej ochrony.",
-  "explanation": "Haseł, kodów logowania i dokładnego adresu nie należy podawać obcym osobom ani przypadkowym aplikacjom."
-}
-```
-
-Nazwy kategorii i wszystkie elementy muszą być unikalne.
+Wymagane są co najmniej trzy pary. Lewa i prawa strona każdej pary muszą być unikalne.
 
 ## Typ `input`
 
-Uczeń wpisuje krótką odpowiedź. W `answers` można dodać kilka równoważnych wariantów. Porównanie ignoruje wielkość liter, dodatkowe spacje i polskie znaki diakrytyczne.
+Krótka odpowiedź wpisywana przez ucznia.
 
 ```json
 {
-  "id": "k7-algorytmy-04",
-  "grades": [7],
-  "topic": "algorytmy",
+  "id": "k6-sieci-130",
+  "grades": [6],
+  "topic": "sieci",
   "difficulty": 2,
   "type": "input",
-  "title": "Wynik obliczenia",
-  "story": "Program dodaje kolejne liczby do zmiennej wynik.",
-  "prompt": "Jaka będzie wartość po dodaniu liczb 1, 2 i 3?",
-  "placeholder": "Wpisz liczbę",
-  "answers": ["6", "sześć"],
-  "hint": "Dodaj wszystkie trzy liczby.",
-  "explanation": "1 + 2 + 3 daje 6."
+  "title": "System nazw",
+  "story": "Komputer zamienia czytelną nazwę strony na adres sieciowy.",
+  "prompt": "Podaj skrót nazwy systemu wykonującego to zadanie.",
+  "hint": "Skrót ma trzy litery.",
+  "explanation": "DNS pomaga odnajdywać adresy powiązane z nazwami domen.",
+  "answers": ["DNS", "dns"],
+  "placeholder": "Wpisz skrót",
+  "sourceKeys": ["ZPE-INFORMATYKA"]
 }
 ```
 
-## Kontrola przed wysłaniem zmiany
+## Zadania z układaniem kolejności
 
-1. Sprawdź poprawność merytoryczną.
-2. Przeczytaj zadanie z perspektywy ucznia danej klasy.
-3. Upewnij się, że pytanie jest jednoznaczne.
-4. Sprawdź, czy błędne odpowiedzi są wiarygodne, ale nie podchwytliwe.
-5. Upewnij się, że podpowiedź pomaga, ale nie kopiuje odpowiedzi.
-6. Sprawdź, czy wyjaśnienie mówi także dlaczego.
-7. Uruchom `npm run validate`.
-8. Uruchom aplikację przez `npm run dev` i rozwiąż nowe zadanie.
-9. Nie zmieniaj identyfikatorów istniejących zadań bez potrzeby.
+Aplikacja nie obsługuje zadań typu `sort` ani `order`. W wielu codziennych sytuacjach kilka kolejności może być poprawnych.
+
+Zamiast tego pytaj o:
+
+- najlepszy pierwszy bezpieczny krok,
+- warunek konieczny przed działaniem,
+- właściwy cel,
+- błąd w przedstawionej procedurze,
+- najlepszą reakcję na konkretną sytuację.
+
+## Kontrola przed pull requestem
+
+```bash
+npm ci
+npm test
+```
+
+Sprawdź też ręcznie:
+
+- czy pytanie ma jedną obronioną odpowiedź,
+- czy najdłuższa odpowiedź nie zdradza regularnie rozwiązania,
+- czy błędne odpowiedzi są wiarygodne, ale wyraźnie gorsze,
+- czy podpowiedź nie podaje gotowej odpowiedzi,
+- czy wyjaśnienie uczy zasady,
+- czy `sourceKeys` wskazują właściwe źródła,
+- czy język pasuje do wskazanej klasy.

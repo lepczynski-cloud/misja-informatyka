@@ -1,70 +1,63 @@
 # Współpraca przy projekcie
 
-Dziękuję za zainteresowanie rozwojem Misji: Informatyka. Najbardziej potrzebne są poprawki merytoryczne, nowe zróżnicowane zadania, testy z uczniami i nauczycielami oraz usprawnienia dostępności.
+Dziękuję za chęć rozwijania Misji: Informatyka. Projekt jest nadal w fazie budowy, dlatego szczególnie cenne są uwagi nauczycieli, uczniów i rodziców.
 
-## Zanim rozpoczniesz
+## Możliwe zgłoszenia
 
-- sprawdź istniejące Issues,
-- dla większej zmiany opisz wcześniej pomysł,
-- nie dodawaj danych uczniów ani prawdziwych danych logowania,
-- zachowaj polski język interfejsu i treści,
-- pamiętaj, że projekt ma uzupełniać szkolne narzędzia, a nie je zastępować.
+- błąd działania aplikacji,
+- niejasne pytanie,
+- niejednoznaczna odpowiedź,
+- błąd językowy,
+- nieaktualna informacja,
+- propozycja nowego zadania,
+- sugestia dotycząca dostępności lub wygody użycia.
 
-## Lokalna konfiguracja
+## Zmiana kodu lub treści
+
+1. Utwórz fork repozytorium.
+2. Utwórz osobną gałąź.
+3. Wprowadź zmianę.
+4. Uruchom testy.
+5. Wyślij pull request z krótkim opisem.
 
 ```bash
-git clone https://github.com/lepczynski-cloud/misja-informatyka.git
-cd misja-informatyka
 npm ci
-npm run dev
-```
-
-## Przed wysłaniem pull requestu
-
-```bash
 npm test
 ```
 
-Następnie sprawdź ręcznie:
-
-- widok ucznia,
-- widok nauczyciela,
-- jasny i ciemny motyw,
-- układ na wąskim ekranie,
-- przynajmniej jedno zadanie, którego dotyczy zmiana.
-
 ## Nowe zadania
 
-Przeczytaj:
+Przed dodaniem zadania przeczytaj:
 
 - [Dodawanie zadań](docs/ADDING-TASKS.md)
-- [Zasady tworzenia treści](docs/CONTENT-GUIDE.md)
+- [Zasady przygotowywania treści](docs/CONTENT-GUIDE.md)
+- [Źródła merytoryczne](docs/SOURCES.md)
 
-Pull request z zadaniami powinien zawierać:
+Każde zadanie musi mieć:
 
-- krótkie wyjaśnienie zakresu,
-- wskazanie klas i tematów,
-- informację o sprawdzeniu merytorycznym,
-- wynik `npm run validate`.
+- unikalny identyfikator,
+- wskazaną klasę, temat i trudność,
+- jasną sytuację i polecenie,
+- podpowiedź,
+- wyjaśnienie,
+- co najmniej jeden poprawny `sourceKey`.
 
-## Styl kodu
+Nie dodawaj zadań typu `sort` albo `order`. Procesy opisuj jako wybór najlepszego działania, warunku, błędu lub reakcji.
 
-- używaj zwykłego JavaScriptu bez dodawania frameworka bez wyraźnej potrzeby,
-- nie dodawaj zależności tylko dla jednej prostej funkcji,
-- zachowaj działanie aplikacji bez zewnętrznych usług,
-- używaj semantycznego HTML,
-- dbaj o obsługę klawiatury i czytników ekranu,
-- tekst widoczny dla użytkownika zapisuj po polsku,
-- nie wstawiaj sekretów, kluczy API ani danych osobowych.
+## Jakość odpowiedzi
 
-## Zgłaszanie błędów
+Nie twórz regularnego wzorca, w którym:
 
-Użyj szablonu błędu w GitHub Issues. Podaj:
+- poprawna odpowiedź jest zawsze najdłuższa,
+- poprawna odpowiedź jest zawsze na tej samej pozycji,
+- błędne odpowiedzi są żartem lub oczywistym absurdem,
+- tylko poprawna odpowiedź ma szczegółowe uzasadnienie,
+- odpowiedź można rozpoznać po innym stylu języka.
 
-- urządzenie i przeglądarkę,
-- kroki prowadzące do problemu,
-- oczekiwane zachowanie,
-- rzeczywiste zachowanie,
-- zrzut ekranu, jeśli nie zawiera danych prywatnych.
+Walidator automatycznie kontroluje część tych cech, ale nie zastępuje przeglądu człowieka.
 
-Problemy bezpieczeństwa zgłaszaj zgodnie z plikiem [SECURITY.md](SECURITY.md).
+## Bezpieczeństwo treści
+
+Przykładowe fałszywe wiadomości powinny korzystać z nieaktywnych domen `.example`. Nie umieszczaj prawdziwych danych dzieci, haseł, tokenów ani aktywnych stron phishingowych.
+
+Problemy bezpieczeństwa samej aplikacji zgłaszaj zgodnie z [SECURITY.md](SECURITY.md).
